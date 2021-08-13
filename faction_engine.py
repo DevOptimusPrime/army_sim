@@ -1,6 +1,8 @@
+from typing import *
 from dataclasses import dataclass
 import typing
 import dice
+import json
 
 
 
@@ -12,6 +14,7 @@ class MapKnowledge:
 
 @dataclass
 class Faction:
+    FactionName: str
     LeaderSKill: int
     Commanders: dict
     SupplyRating: int
@@ -22,6 +25,7 @@ class Faction:
     LastTurnLocation : dict
     Units: dict
     Items: list
+    StealthRating: int
 
 
 @dataclass
@@ -31,10 +35,24 @@ class SimpleFaction:
     RangedSkill: int
     MeleeSkill: int
     Status: int
+    MapKnowledge: list
+    CurrentLocation: dict
+    LastTurnLocation: dict
 
 
-Romans = SimpleFaction("Romans",2, 2, 3, 3)
-Gauls = SimpleFaction("Gauls",1, 2, 3, 3)
+
+
+
+def LoadPlayer(filepath: str) -> SimpleFaction:
+    with  open(filepath, 'r') as f:
+        faction = SimpleFaction(**json.load(f))
+    return faction
+    
+
+
+
+
+
 
 def run_combat(attacker: SimpleFaction, defender: SimpleFaction) -> SimpleFaction :
     print(f"Entering combat Attacker: {attacker.Name} Defender: {defender.Name}")
@@ -64,10 +82,4 @@ def run_combat(attacker: SimpleFaction, defender: SimpleFaction) -> SimpleFactio
     if defender.Status <= 0:
         print(f"Defending faction {defender.Name} routed!!")
 
-
-
-
-
-if __name__ == "__main__":
-    run_combat(Romans, Gauls)
 
